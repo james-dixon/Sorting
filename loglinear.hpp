@@ -22,23 +22,26 @@ namespace sort
 
 			Iterator midpoint = start + std::distance(start, end)/2;
 
-			std::vector<dtype> left(start, midpoint);
-			std::vector<dtype> right(midpoint, end);
+			//	std::vector<dtype> left(start, midpoint);
+			//	std::vector<dtype> right(midpoint, end);
 
 			// recursively sort the two halves in place
-			merge(left.begin(), left.end());
-			merge(right.begin(), right.end());
+			merge(start, midpoint);
+			merge(midpoint, end);
 
 			// then merge them back into start->end
 
-			Iterator pleft = left.begin();
-			Iterator pright = right.begin();
-			Iterator overall = start;
-
-			while(overall!=end)
+			Iterator pleft = start;
+			Iterator pright = midpoint;
+		
+			std::vector<dtype> result;
+			result.resize( std::distance(start,end) );
+			Iterator overall = result.begin();
+			
+			while(overall!=result.end())
 			{
 
-				if( pleft!=left.end() && (*(pleft) <= *(pright) || pright==right.end()) )
+				if( pleft!=midpoint && (*(pleft) <= *(pright) || pright==end ) )
 				{
 					*overall = *pleft;
 					pleft = std::next(pleft);
@@ -51,7 +54,8 @@ namespace sort
 
 				overall = std::next(overall);
 			}
-			
+
+			std::copy(result.begin(), result.end(), start);
 			
 			
 		}
