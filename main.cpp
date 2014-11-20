@@ -84,4 +84,13 @@ int main()
 	cout<<"Merge-sort took: "<<dur<<"ms"<<endl;
 
 
+	temp_vector = unsorted_vector;
+	t1 = chrono::high_resolution_clock::now();
+	sort::loglin::quick(begin(temp_vector), end(temp_vector));
+	t2 = chrono::high_resolution_clock::now();
+	assert( temp_vector == sorted_vector );
+	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	cout<<"Quick-sort took: "<<dur<<"ms"<<endl;
+
+
 }
