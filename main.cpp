@@ -12,6 +12,7 @@
 #include "quadratic.hpp"
 #include "loglinear.hpp"
 #include "radix.hpp"
+#include "parallel.hpp"
 
 // restrict by return type
 template<typename T>
@@ -39,7 +40,7 @@ int main()
 {
 	using myint = uint32_t;
 	
-	const vector<myint> unsorted_vector = random_ints<myint>(1000000);
+	const vector<myint> unsorted_vector = random_ints<myint>(10000000);
 	vector<myint> temp_vector = unsorted_vector;
 	
 	// declare chrono objects
@@ -91,7 +92,14 @@ int main()
 	assert( temp_vector == sorted_vector );
 	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
 	cout<<"Merge-sort took: "<<dur<<"ms"<<endl;
-
+	
+	temp_vector = unsorted_vector;
+	t1 = chrono::high_resolution_clock::now();
+	sort::parallel::merge(begin(temp_vector), end(temp_vector));
+	t2 = chrono::high_resolution_clock::now();
+	assert( temp_vector == sorted_vector );
+	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	cout<<"Parallel-Merge-sort took: "<<dur<<"ms"<<endl;
 
 	temp_vector = unsorted_vector;
 	t1 = chrono::high_resolution_clock::now();
@@ -101,15 +109,23 @@ int main()
 	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
 	cout<<"Quick-sort took: "<<dur<<"ms"<<endl;
 
-	
+	temp_vector = unsorted_vector;
+	t1 = chrono::high_resolution_clock::now();
+	sort::parallel::quick(begin(temp_vector), end(temp_vector));
+	t2 = chrono::high_resolution_clock::now();
+	assert( temp_vector == sorted_vector );
+	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	cout<<"Parallel-Quick-sort took: "<<dur<<"ms"<<endl;
+
 	
 	
 	temp_vector = unsorted_vector;
 	t1 = chrono::high_resolution_clock::now();
-	sort::radix(temp_vector);
+	sort::radix::single(temp_vector);
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
 	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
 	cout<<"Radix-sort took: "<<dur<<"ms"<<endl;
 
+	
 }
