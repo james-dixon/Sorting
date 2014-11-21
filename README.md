@@ -11,3 +11,13 @@ based on an STL like design:
  Radix sort is nice but only works on unsigned integer types
  
  Try to find some more to implement, is it possible to beat STL for general (non-radix) sorts?
+
+To implement:
+ - heap 
+ - shell 
+ - bogo (?)
+ - comb
+ - bucket (related to radix)
+ - counting
+ - cocktail
+ - tim
