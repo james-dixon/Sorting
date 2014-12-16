@@ -112,6 +112,14 @@ namespace sort
 				quick(std::next(below), end);
 		}
 			
+		template<class Iterator>
+		typename std::enable_if< std::is_same< std::random_access_iterator_tag,
+											   typename std::iterator_traits<Iterator>::iterator_category >::value,
+								 void >::type
+		heap(const Iterator start, const Iterator end)
+		{
+			return;
+		}
 
 			
 	
