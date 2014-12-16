@@ -10,10 +10,13 @@ based on an STL like design:
  
  Radix sort is nice but only works on unsigned integer types
  
- Try to find some more to implement, is it possible to beat STL for general (non-radix) sorts?
+ Heap sort is much slower than the others O(Nlog(N)) sorts is this due to not all being in the cache? It gets worse (more slower) as the size increases
+
+ Parallel sorts are (very) slow for very small lists, but significantly faster for large lists
+
+ Is it possible to beat STL for general (non-radix) sorts?
 
 To implement:
- - heap 
  - shell 
  - bogo (?)
  - comb
