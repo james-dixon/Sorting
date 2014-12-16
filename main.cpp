@@ -39,14 +39,15 @@ using namespace std;
 int main()
 {
 	using myint = uint32_t;
+	using time_period = std::chrono::microseconds;
 	
-	const vector<myint> unsorted_vector = random_ints<myint>(10000000);
+	const vector<myint> unsorted_vector = random_ints<myint>(10000);
 	vector<myint> temp_vector = unsorted_vector;
 	
 	// declare chrono objects
 	auto t1 = chrono::high_resolution_clock::now();
 	auto t2 = chrono::high_resolution_clock::now();
-	auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	auto dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 
 
 	t1 = chrono::high_resolution_clock::now();
@@ -54,7 +55,7 @@ int main()
 	t2 = chrono::high_resolution_clock::now();
 	assert( std::is_sorted(begin(temp_vector), end(temp_vector)) );
 	const vector<myint> sorted_vector = temp_vector;
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"STL-sort took: "<<dur<<"ms"<<endl;
 
 	
@@ -85,20 +86,29 @@ int main()
 	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
 	cout<<"Selection-sort took: "<<dur<<"ms"<<endl;
 */
+
+	temp_vector = unsorted_vector;
+	t1 = chrono::high_resolution_clock::now();
+	sort::loglin::heap(begin(temp_vector), end(temp_vector));
+	t2 = chrono::high_resolution_clock::now();
+	assert( temp_vector == sorted_vector );
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
+	cout<<"Heap-sort took: "<<dur<<"ms"<<endl;
+	
 	temp_vector = unsorted_vector;
 	t1 = chrono::high_resolution_clock::now();
 	sort::loglin::merge(begin(temp_vector), end(temp_vector));
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"Merge-sort took: "<<dur<<"ms"<<endl;
-	
+		
 	temp_vector = unsorted_vector;
 	t1 = chrono::high_resolution_clock::now();
 	sort::parallel::merge(begin(temp_vector), end(temp_vector));
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"Parallel-Merge-sort took: "<<dur<<"ms"<<endl;
 
 	temp_vector = unsorted_vector;
@@ -106,7 +116,7 @@ int main()
 	sort::loglin::quick(begin(temp_vector), end(temp_vector));
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"Quick-sort took: "<<dur<<"ms"<<endl;
 
 	temp_vector = unsorted_vector;
@@ -114,7 +124,7 @@ int main()
 	sort::parallel::quick(begin(temp_vector), end(temp_vector));
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"Parallel-Quick-sort took: "<<dur<<"ms"<<endl;
 
 	
@@ -124,7 +134,7 @@ int main()
 	sort::radix::single(temp_vector);
 	t2 = chrono::high_resolution_clock::now();
 	assert( temp_vector == sorted_vector );
-	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+	dur = std::chrono::duration_cast<time_period>(t2-t1).count();
 	cout<<"Radix-sort took: "<<dur<<"ms"<<endl;
 
 	

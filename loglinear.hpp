@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iterator>
+#include <iomanip>
 
 #include "quadratic.hpp"
 
@@ -116,9 +117,64 @@ namespace sort
 		typename std::enable_if< std::is_same< std::random_access_iterator_tag,
 											   typename std::iterator_traits<Iterator>::iterator_category >::value,
 								 void >::type
+		// we restrict it to only work on random access iterators!
 		heap(const Iterator start, const Iterator end)
 		{
-			return;
+			// lambdas can't be templated (yet?), so we have to use auto
+			auto parent = [start](const Iterator child){return start + (std::distance(start,child)-1)/2;};
+			auto first_child = [start](const Iterator parent, const Iterator last){Iterator child = parent + std::distance(start,parent) + 1;
+																				   return child<last ? child : parent ;};
+			auto second_child = [start](const Iterator parent, const Iterator last){Iterator child = parent + std::distance(start,parent) + 2;
+																					return child<last ? child : parent ;};
+
+			// extracting from the heap seems to be very slow
+			// :( maybe just due to lots of cache misses?
+			
+			//	auto t1 = std::chrono::high_resolution_clock::now();
+			//	auto t2 = std::chrono::high_resolution_clock::now();
+			//	auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+			
+			// build up the heap
+			for(Iterator pos = start+1; pos!=end; ++pos)
+			{
+				Iterator tmp = pos;
+					
+				while( *(tmp) > *(parent(tmp)) )
+				{
+					std::swap( *(tmp), *(parent(tmp)) );
+					tmp = parent(tmp);
+				}
+			}
+			
+			//	t2 = std::chrono::high_resolution_clock::now();
+			//	dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+			//	std::cout<<"Building heap took: "<<dur<<"ms"<<std::endl;
+			//	t1 = std::chrono::high_resolution_clock::now();
+			
+			// take down the heap
+			for(Iterator pos = end-1; pos!=start; --pos)
+			{
+				std::swap( *pos, *start);
+				Iterator tmp = start;
+
+				while(  (*tmp < *(first_child(tmp,pos)))  ||  (*tmp < *(second_child(tmp,pos)))  )
+				{
+					if( *(second_child(tmp,pos)) > *(first_child(tmp,pos)) )
+					{
+						std::swap( *tmp, *(second_child(tmp,pos)) );
+						tmp = second_child(tmp,pos);
+					}
+					else 
+					{
+						std::swap( *tmp, *(first_child(tmp,pos)) );
+						tmp = first_child(tmp,pos);
+					}
+				}
+				
+			}
+			//	t2 = std::chrono::high_resolution_clock::now();
+			//  dur = std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count();
+			//	std::cout<<"Extracting the heap took: "<<dur<<"ms"<<std::endl;
 		}
 
 			
